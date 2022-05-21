@@ -5,22 +5,27 @@ date: '2022-05-21'
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup, include=FALSE, warning=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 # 1. Measuring fund performance
 
+Librerias
+```{r,echo=FALSE, warning=FALSE}
+#install.packages("quantmod")
+library(quantmod)
+#install.packages("kableExtra")
+library(kableExtra)
+```
+
 
 ```{r,echo=FALSE}
 
-install.packages("quantmod")
-library(quantmod)
 
-
-tickers <- c("VSMPX","VFIAX","DODGX","SWPPX","RLBGX", "FSGEX","VGHAX","FPCIX",
-             "FTBFX","BBCPX","PTTRX","FKINX","CAIBX","ABALX","AGTHX","GFFFX",
-             "AMECX","TRBCX","PIMIX","FBKWX")
+tickers <- c("VSMPX","VFIAX","DODGX","SWPPX","RLBGX","FSGEX","VGHAX",
+             "FPCIX","FTBFX","BBCPX","PTTRX","FKINX","CAIBX","ABALX",
+             "AGTHX","GFFFX","AMECX","TRBCX","PIMIX","FBKWX")
 
 
 portfolioPrices <- NULL
@@ -33,4 +38,26 @@ for (activos in tickers){
 }
 
 ```
+
+```{r}
+rentaibilidad <-monthlyReturn(portfolioPrices,leading = FALSE)
+```
+
+```{r}
+n <- length(tickers)
+for (i in n){
+  rentaibilidad <-monthlyReturn(portfolioPrices[i+1],leading = FALSE)
+}
+```
+
+
+
+
+```{r}
+kable(portfolioPrices)
+```
+
+
+
+
 
