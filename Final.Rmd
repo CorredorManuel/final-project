@@ -31,31 +31,32 @@ tickers <- c("VSMPX","VFIAX","DODGX","SWPPX","RLBGX","FSGEX","VGHAX",
 Precio de los activos y rentabilidades
 ```{r,echo=FALSE}
 Prices <- c()
-Rentabilidad <- c()
-#i <- 1
 for (activos in tickers){
   Prices <- cbind(Prices,getSymbols.yahoo(
     Symbols =activos,index.class  = 'Date',from ="2017-05-01",
     to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
-    Rentabilidad <- cbind(Rentabilidad,monthlyReturn(Prices,leading = FALSE))[-1,]
- #i <- i + 1 #ask miguel
-
 }
 colnames(Prices)<-tickers
-colnames(Rentabilidad)<-tickers
+
 ```
 
 ```{r}
-renta <- as.numeric((Prices[2,1]/Prices[1,1])-1)
-renta 
+Rentabilidad <- c()
+n <- ncol(Prices)
+for (i in 1:n){
+
+    Rentabilidad <- cbind(Rentabilidad,monthlyReturn(Prices[,i],leading = FALSE))[-1,]
+}
+colnames(Rentabilidad)<-tickers  
 ```
 
 
+
+
 ```{r}
-#kable(Prices)
-inicial <- 103.7812
-final <- 104.2584
-(final/inicial)-1
+kable(Prices)
+kable(Rentabilidad
+      )
 ```
 
 
