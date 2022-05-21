@@ -27,4 +27,3 @@ colnames(retornos_activos)<-tickers
 precios <- as.data.frame(precios)
 retornos_activos <- as.data.frame(retornos_activos)
 
-
