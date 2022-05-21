@@ -99,3 +99,16 @@ retornos <- Reduce(merge,list(VSMPX,VFIAX,DODGX,SWPPX,RLBGX,FSGEX,VGHAX,FPCIX,FT
 
 
 test
+
+
+
+portfolioPrices <- NULL
+i <- 1
+for (tickers in activos){
+  portfolioPrices <- cbind(portfolioPrices, getSymbols.yahoo(tickers, 
+                                                             from = sDate, 
+                                                             to = eDate, 
+                                                             periodicity =  frecuencia,auto.assign=FALSE)[,ColID])
+  print(paste("Hemos descargado el Ticket: ", tickers, " (", nombres[i], ")", sep = ""))
+  i <- i + 1
+}
