@@ -98,20 +98,4 @@ retornos <- Reduce(merge,list(VSMPX,VFIAX,DODGX,SWPPX,RLBGX,FSGEX,VGHAX,FPCIX,FT
                            PTTRX,FKINX,CAIBX,ABALX,AGTHX,GFFFX,AMECX, TRBCX,PIMIX,FBKWX))
 
 
-test
-
-
-
-
-portfolioPrices <- NULL
-i <- 1
-for (tickers in activos){
-  portfolioPrices <- cbind(portfolioPrices, 
-                           getSymbols.yahoo(Symbols ="TRBCX",index.class  = 'Date',from ="2017-05-01",
-                                            to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
-  i <- i + 1
-}
-
-
-
 document
