@@ -98,3 +98,4 @@ retornos <- Reduce(merge,list(VSMPX,VFIAX,DODGX,SWPPX,RLBGX,FSGEX,VGHAX,FPCIX,FT
                            PTTRX,FKINX,CAIBX,ABALX,AGTHX,GFFFX,AMECX, TRBCX,PIMIX,FBKWX))
 
 
+test
