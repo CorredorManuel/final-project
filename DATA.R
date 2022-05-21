@@ -1,4 +1,4 @@
-install.packages("quantmod")
+#install.packages("quantmod")
 library(quantmod)
 
 
@@ -25,5 +25,5 @@ colnames(precios)<-tickers
 colnames(retornos_activos)<-tickers
 
 precios <- as.data.frame(precios)
-retornos_activos <- as.data.frame(retornos_activos)
-
+retornos_activos <- as.data.frame(retornos_activos)[-1,]#delete first row
+#retornos_activos1 <-  retornos_activos[-1,] #delete first row

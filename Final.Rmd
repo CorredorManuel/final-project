@@ -19,45 +19,43 @@ library(quantmod)
 library(kableExtra)
 ```
 
-
-```{r,echo=FALSE}
-
-
+Lista de activos
+```{r}
 tickers <- c("VSMPX","VFIAX","DODGX","SWPPX","RLBGX","FSGEX","VGHAX",
              "FPCIX","FTBFX","BBCPX","PTTRX","FKINX","CAIBX","ABALX",
              "AGTHX","GFFFX","AMECX","TRBCX","PIMIX","FBKWX")
 
 
-portfolioPrices <- NULL
-i <- 1
+```
+
+Precio de los activos y rentabilidades
+```{r,echo=FALSE}
+Prices <- c()
+Rentabilidad <- c()
+#i <- 1
 for (activos in tickers){
-  portfolioPrices <- cbind(portfolioPrices, 
-                           getSymbols.yahoo(Symbols =activos,index.class  = 'Date',from ="2017-05-01",
-                                            to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
-  i <- i + 1
+  Prices <- cbind(Prices,getSymbols.yahoo(
+    Symbols =activos,index.class  = 'Date',from ="2017-05-01",
+    to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
+    Rentabilidad <- cbind(Rentabilidad,monthlyReturn(Prices,leading = FALSE))[-1,]
+ #i <- i + 1 #ask miguel
+
 }
-
+colnames(Prices)<-tickers
+colnames(Rentabilidad)<-tickers
 ```
 
 ```{r}
-rentaibilidad <-monthlyReturn(portfolioPrices,leading = FALSE)
+renta <- as.numeric((Prices[2,1]/Prices[1,1])-1)
+renta 
 ```
-
-```{r}
-n <- length(tickers)
-for (i in n){
-  rentaibilidad <-monthlyReturn(portfolioPrices[i+1],leading = FALSE)
-}
-```
-
-
 
 
 ```{r}
-kable(portfolioPrices)
+#kable(Prices)
+inicial <- 103.7812
+final <- 104.2584
+(final/inicial)-1
 ```
-
-
-
 
 
