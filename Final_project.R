@@ -112,3 +112,6 @@ for (tickers in activos){
   print(paste("Hemos descargado el Ticket: ", tickers, " (", nombres[i], ")", sep = ""))
   i <- i + 1
 }
+
+
+chart
