@@ -16,7 +16,7 @@ for (activos in tickers){
                            getSymbols.yahoo(Symbols =activos,index.class  = 'Date',from ="2017-05-01",
                                            to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
   
-  retornos_activos <- cbind(retornos_activos,monthlyReturn(portfolioPrices,leading = FALSE))
+  retornos_activos <- cbind(retornos_activos,monthlyReturn(precios,leading = FALSE))
   
   i <- i + 1
 }
