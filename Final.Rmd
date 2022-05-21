@@ -50,7 +50,17 @@ for (i in 1:n){
 colnames(Rentabilidad)<-tickers  
 ```
 
+```{r}
+sharpe_ratio <- round(
+  SharpeRatio(Rentabilidad, Rf = 0.0016761), 4
+)
+?SharpeRatio
 
+```
+
+$$
+\frac{\overline{(R_{a}-R_{f})}}{√{σ_{(R_{a}-R_{f})}}}
+$$
 
 
 ```{r}
