@@ -102,6 +102,7 @@ test
 
 
 
+
 portfolioPrices <- NULL
 i <- 1
 for (tickers in activos){
@@ -114,4 +115,5 @@ for (tickers in activos){
 }
 
 
-chart
+
+document
