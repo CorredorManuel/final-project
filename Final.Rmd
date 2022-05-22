@@ -15,6 +15,9 @@ Librerias
 ```{r,echo=FALSE, warning=FALSE}
 #install.packages("quantmod")
 library(quantmod)
+library(readxl)
+library(dygraphs)
+library(PerformanceAnalytics) #for sharpe
 #install.packages("kableExtra")
 #library(kableExtra)
 ```
@@ -54,7 +57,7 @@ colnames(Rentabilidad)<-tickers
 sharpe_ratio <- round(
   SharpeRatio(Rentabilidad, Rf = 0.0016761), 4
 )
-?SharpeRatio
+#?SharpeRatio
 
 ```
 
@@ -71,43 +74,79 @@ $$
 
 ```{r}
 # FAMA & FRENCH
-
-library(readxl)
 Data_Factors <- read_excel("Data_Factors.xlsx")
+
 ```
 
 
 ```{r}
 #CALCULAMOS LAS VARIABLES Y (Rentabilidad_activo - RF)
-
 variable_y <- c()
 x <- ncol(Rentabilidad)
 for (i in 1:x) {
-  
   variable_y<- cbind(variable_y,((Rentabilidad[,i])-(Data_Factors$RF)))
 }
-
-
 ```
 
 
 ```{r}
-
-
+#creo que no es necesario
 Data_Regression <- merge(x=Data_Factors,y=variable_y,by =NULL)
-
 names(Data_Regression)[2] <-"RMRF"
-
 ```
+
+$$
+R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it}
+$$
 
 ```{r}
 #Preparamos la Regresión
 
-regression <- lm(VSMPX ~ RMRF + SMB + HML, data = Data_Regression)
-summary(regression)
 
+regression <- lm(VSMPX ~ RMRF + SMB + HML, data = Data_Regression)
+#summary(regression)
+coefficients(regression)
 # NOTA: Falta hacer un for que haga cada regresion cambiando el activo y lo coloque en un dataframe
 
 
+```
+
+
+```{r}
+X1 <- Data_Factors[,2:4]
+X <- as.matrix( cbind(1,X1))
+Y <- as.matrix(variable_y[,1])
+betas1 <- solve(t(X)%*%X)%*%t(X)%*%Y
+betas1
+
+betas2 <- lm(Y ~ X)
+betas2
+```
+
+$$
+\hat{\beta}=(X^TX)^{-1}X^TY
+$$
+
+```{r}
+betas3 <- cbind()
+Intercepto <- cbind()
+RMRF <- cbind()
+SMB <- cbind()
+HML <- cbind()
+for (i in 1:20){
+  betas3 <- solve(t(X)%*%X)%*%t(X)%*%variable_y[,i]
+  Intercepto[i] <- betas3[1,1]
+  RMRF[i]<- betas3[2,1]
+  SMB[i] <- betas3[3,1]
+  HML[i] <- betas3[4,1]
+}
+```
+
+```{r}
+todo <- cbind(Intercepto,RMRF,SMB,HML)
+# Transpone todas las columnas menos la primer
+df_transpose <- data.frame(t(todo))
+# Añadimos los nombres de las columnas
+colnames(df_transpose)<-tickers
 ```
 
