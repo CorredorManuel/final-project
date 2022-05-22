@@ -78,7 +78,7 @@ Data_Factors <- read_excel("Data_Factors.xlsx")
 
 
 ```{r}
-#CALCULAMOS LAS VARAIBLES Y (Rentabilidad - RF)
+#CALCULAMOS LAS VARIABLES Y (Rentabilidad_activo - RF)
 
 variable_y <- c()
 x <- ncol(Rentabilidad)
