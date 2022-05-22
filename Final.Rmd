@@ -78,19 +78,36 @@ Data_Factors <- read_excel("Data_Factors.xlsx")
 
 
 ```{r}
+#CALCULAMOS LAS VARAIBLES Y (Rentabilidad - RF)
 
-variable_y <- NA
-
-for (i in tickers) {
+variable_y <- c()
+x <- ncol(Rentabilidad)
+for (i in 1:x) {
   
-  variable_y<- cbind(variable_y,((Rentabilidad$i)-(Data_Factors$RF)))
+  variable_y<- cbind(variable_y,((Rentabilidad[,i])-(Data_Factors$RF)))
 }
 
 
+```
 
-variable_y <- (Rentabilidad$VSMPX)-(Data_Factors$RF)
-colnames(variable_y) <-"VSMPX - RF"
-View(variable_y)
+
+```{r}
+
+
+Data_Regression <- merge(x=Data_Factors,y=variable_y,by =NULL)
+
+names(Data_Regression)[2] <-"RMRF"
+
+```
+
+```{r}
+#Preparamos la Regresión
+
+regression <- lm(VSMPX ~ RMRF + SMB + HML, data = Data_Regression)
+summary(regression)
+
+# NOTA: Falta hacer un for que haga cada regresion cambiando el activo y lo coloque en un dataframe
+
 
 ```
 
