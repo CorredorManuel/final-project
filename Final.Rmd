@@ -57,6 +57,15 @@ colnames(Rentabilidad)<-tickers
 ```
 
 ```{r}
+promedio <- cbind()
+x <- ncol(Rentabilidad)
+for (i in 1:x) {
+  promedio<- cbind(promedio,mean(Rentabilidad[,i]))
+}
+```
+
+
+```{r}
 sharpe_ratio <- round(
   SharpeRatio(Rentabilidad, Rf = 0.0016761), 4
 )
@@ -127,8 +136,6 @@ Y <- as.matrix(variable_y[,1])
 beta <- solve(t(X)%*%X)%*%t(X)%*%Y
 beta
 
-#betas2 <- lm(Y ~ X)
-#betas2
 ```
 
 $$
@@ -156,5 +163,11 @@ todo <- cbind(Intercepto,RMRF,SMB,HML)
 df_transpose <- data.frame(t(todo))
 # Añadimos los nombres de las columnas
 colnames(df_transpose)<-tickers
+```
+
+```{r}
+Filtro1 <- cbind(sort(df_transpose[1,1:20]))
+Filtro2 <- t(Filtro1)
+print(Filtro2[16:20,1])
 ```
 
