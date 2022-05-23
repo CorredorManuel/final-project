@@ -19,7 +19,7 @@ library(readxl)
 library(dygraphs)
 library(PerformanceAnalytics) #for sharpe
 library(datasets)
-library(tidyverse)
+library(tidyverse) #for sort
 #install.packages("kableExtra")
 #library(kableExtra)
 ```
@@ -53,6 +53,7 @@ for (i in 1:n){
     Rentabilidad <- cbind(Rentabilidad,monthlyReturn(Prices[,i],leading = FALSE))[-1,]
 }
 colnames(Rentabilidad)<-tickers  
+#mean(Rentabilidad[,1:20]) crear rentabilidad 
 ```
 
 ```{r}
@@ -63,7 +64,7 @@ sharpe_ratio <- round(
 # filtrar
 
 Filtro <- cbind(sort(sharpe_ratio[1,1:20]))
-print(Filtro[15:20,1])
+print(Filtro[16:20,1])
 #Filtro <- as.matrix(sort(Filtro,decreasing = TRUE))
 #head(Filtro)
 ```
@@ -82,7 +83,7 @@ $$
 ```{r}
 # FAMA & FRENCH
 Data_Factors <- read_excel("Data_Factors.xlsx")
-
+names(Data_Factors)[2] <-"RMRF"
 ```
 
 
@@ -98,8 +99,9 @@ for (i in 1:x) {
 
 ```{r}
 #creo que no es necesario
-Data_Regression <- merge(x=Data_Factors,y=variable_y,by =NULL)
-names(Data_Regression)[2] <-"RMRF"
+#Data_Regression <- merge(x=Data_Factors,y=variable_y,by =NULL)
+Data_Regression <- cbind(Data_Factors[,2:5],variable_y)
+
 ```
 
 $$
@@ -115,7 +117,6 @@ regression <- lm(VSMPX ~ RMRF + SMB + HML, data = Data_Regression)
 coefficients(regression)
 # NOTA: Falta hacer un for que haga cada regresion cambiando el activo y lo coloque en un dataframe
 
-
 ```
 
 
@@ -123,11 +124,11 @@ coefficients(regression)
 X1 <- Data_Factors[,2:4]
 X <- as.matrix( cbind(1,X1))
 Y <- as.matrix(variable_y[,1])
-betas1 <- solve(t(X)%*%X)%*%t(X)%*%Y
-betas1
+beta <- solve(t(X)%*%X)%*%t(X)%*%Y
+beta
 
-betas2 <- lm(Y ~ X)
-betas2
+#betas2 <- lm(Y ~ X)
+#betas2
 ```
 
 $$
@@ -135,17 +136,17 @@ $$
 $$
 
 ```{r}
-betas3 <- cbind()
+betas <- cbind()
 Intercepto <- cbind()
 RMRF <- cbind()
 SMB <- cbind()
 HML <- cbind()
 for (i in 1:20){
-  betas3 <- solve(t(X)%*%X)%*%t(X)%*%variable_y[,i]
-  Intercepto[i] <- betas3[1,1]
-  RMRF[i]<- betas3[2,1]
-  SMB[i] <- betas3[3,1]
-  HML[i] <- betas3[4,1]
+  betas <- solve(t(X)%*%X)%*%t(X)%*%variable_y[,i]
+  Intercepto[i] <- betas[1,1]
+  RMRF[i]<- betas[2,1]
+  SMB[i] <- betas[3,1]
+  HML[i] <- betas[4,1]
 }
 ```
 
