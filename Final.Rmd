@@ -18,6 +18,8 @@ library(quantmod)
 library(readxl)
 library(dygraphs)
 library(PerformanceAnalytics) #for sharpe
+library(datasets)
+library(tidyverse)
 #install.packages("kableExtra")
 #library(kableExtra)
 ```
@@ -58,7 +60,12 @@ sharpe_ratio <- round(
   SharpeRatio(Rentabilidad, Rf = 0.0016761), 4
 )
 #?SharpeRatio
+# filtrar
 
+Filtro <- cbind(sort(sharpe_ratio[1,1:20]))
+print(Filtro[15:20,1])
+#Filtro <- as.matrix(sort(Filtro,decreasing = TRUE))
+#head(Filtro)
 ```
 
 $$
