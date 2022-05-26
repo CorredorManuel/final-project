@@ -2,7 +2,9 @@
 title: "Final"
 author: "Miguel Angel Malagon - Manuel Camilo Corredor"
 date: '2022-05-21'
-output: html_document
+output:
+  html_document: default
+  pdf_document: default
 ---
 
 ```{r setup, include=FALSE, warning=FALSE}
@@ -169,5 +171,20 @@ colnames(df_transpose)<-tickers
 Filtro1 <- cbind(sort(df_transpose[1,1:20]))
 Filtro2 <- t(Filtro1)
 print(Filtro2[16:20,1])
+```
+
+
+
+
+# Punto 2
+
+```{r}
+library(readxl)
+Betas <- read_excel("Betas.xlsx")
+View(Betas)
+```
+
+```{r}
+Rm <-Betas$
 ```
 
