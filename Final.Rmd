@@ -185,6 +185,39 @@ View(Betas)
 ```
 
 ```{r}
-Rm <-Betas$
+Rm <-Betas$`Adj Close**`
+Raapl <- Betas$`Adj Close`
+Var1 <- c()
+Var2 <- c()
+n <- length(Rm)
+for(i in 1:n){
+Var1[i] <- (Rm[i+1]/Rm[i])-1
+Var2[i] <- (Raapl[i+1]-Raapl[i])/Raapl[i]
+
+}
+Var1 <- c(NA,Var1)
+Var1 <-Var1[-269]
+Var2<- c(NA,Var2)
+Var2 <-Var2[-269]
+
+Data_Betas <- as.data.frame(cbind(Raapl,Var2,Rm,Var1)[-1,])
+```
+
+```{r}
+
+cov <- cov(Data_Betas$Var2,Data_Betas$Var1)
+var <- var(Data_Betas$Var1)
+
+beta <- cov/var
+
+ventana <- cbind()
+cov1 <- cbind()
+var1 <- cbind()
+for(i in 1:n){
+  cov1[i] <- cov(Data_Betas$Var2[1:60],Data_Betas$Var1[1:60])
+  var1[i] <- var(Data_Betas$Var1)[1:60]
+  ventana[i] <- cov1[i]/var1[i]
+}
+
 ```
 
