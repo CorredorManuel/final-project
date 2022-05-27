@@ -201,6 +201,7 @@ Var2<- c(NA,Var2)
 Var2 <-Var2[-269]
 
 Data_Betas <- as.data.frame(cbind(Raapl,Var2,Rm,Var1)[-1,])
+#Data_Betas <- cbind(Data_Betas)
 ```
 
 ```{r}
@@ -209,15 +210,33 @@ cov <- cov(Data_Betas$Var2,Data_Betas$Var1)
 var <- var(Data_Betas$Var1)
 
 beta <- cov/var
-
+t <- dim(Data_Betas)[1]
 ventana <- cbind()
 cov1 <- cbind()
 var1 <- cbind()
-for(i in 1:n){
-  cov1[i] <- cov(Data_Betas$Var2[1:60],Data_Betas$Var1[1:60])
-  var1[i] <- var(Data_Betas$Var1)[1:60]
-  ventana[i] <- cov1[i]/var1[i]
+
+
+
+#for (i in 10:(t-10)) {
+#cov1 <- xxx[1:i,]
+
+#}
+
+
+
+
+for(i in 1:(n-60)){
+  cov1[i] <- cov(Data_Betas$Var2[i:(59+i)],Data_Betas$Var1[i:(59+i)])
+  var1[i] <- var(Data_Betas$Var1[i:(59+i)])
+  ventana <- cov1/var1
 }
+ventana1 <- as.data.frame(ventana) 
+y <- 1:208
+plot(ventana)
 
 ```
 
+```{r}
+library(ggplot2)
+geom_line(aes(x=ventana))
+```
