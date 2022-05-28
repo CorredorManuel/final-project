@@ -22,6 +22,8 @@ library(dygraphs)
 library(PerformanceAnalytics) #for sharpe
 library(datasets)
 library(tidyverse) #for sort
+library(ggplot2)
+library(ggthemes)
 #install.packages("kableExtra")
 #library(kableExtra)
 ```
@@ -216,15 +218,6 @@ cov1 <- cbind()
 var1 <- cbind()
 
 
-
-#for (i in 10:(t-10)) {
-#cov1 <- xxx[1:i,]
-
-#}
-
-
-
-
 for(i in 1:(n-60)){
   cov1[i] <- cov(Data_Betas$Var2[i:(59+i)],Data_Betas$Var1[i:(59+i)])
   var1[i] <- var(Data_Betas$Var1[i:(59+i)])
@@ -233,24 +226,17 @@ for(i in 1:(n-60)){
 y <- 1:208
 ventana1 <- as.data.frame(cbind(ventana,y)) 
 
-plot(ventana)
-
-
-
-
-
-
-ggplot(ventana1,(aes(y=ventana,x=y)))+
-geom_line()
-
-
-
-
-
-
 ```
 
+
+
 ```{r}
-library(ggplot2)
-geom_line(aes(x=ventana))
+ggplot(ventana1) +
+geom_line(aes(y=ventana,x=y), colour= "blue",size=1) +
+ggtitle("                     Serie de Beta Ventana 60 meses") +
+labs(x="Periodo de Tiempo",y="Beta" )+
+theme_economist()+theme(axis.text = element_text(angle=0))
+  
+  
+
 ```
