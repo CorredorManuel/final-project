@@ -24,6 +24,7 @@ library(datasets)
 library(tidyverse) #for sort
 library(ggplot2)
 library(ggthemes)
+library(readxl)
 #install.packages("kableExtra")
 #library(kableExtra)
 ```
@@ -181,7 +182,6 @@ print(Filtro2[16:20,1])
 # Punto 2
 
 ```{r}
-library(readxl)
 Betas <- read_excel("Betas.xlsx")
 View(Betas)
 ```
@@ -240,3 +240,40 @@ theme_economist()+theme(axis.text = element_text(angle=0))
   
 
 ```
+
+
+# Punto 3
+
+```{r}
+Fondos <- read_excel("retornos_fondos.xlsx")
+View(Fondos)
+```
+
+
+
+```{r}
+RG <- Fondos$`MSCI -DTF`
+RL <- Fondos$`COLCAP - DTF`
+Xfondos <- cbind(1,RG,RL)
+PROTECCION <- cbind(Fondos$PROTECCION)
+PORVENIR<- cbind(Fondos$PORVENIR)
+SKANDIA<- cbind(Fondos$SKANDIA)
+COLFONDOS<- cbind(Fondos$COLFONDOS)
+
+```
+
+```{r}
+lm(PROTECCION~Xfondos)
+lm(PORVENIR~Xfondos)
+lm(SKANDIA~Xfondos)
+lm(COLFONDOS~Xfondos)
+Beta_PROTECCION <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%PROTECCION
+Beta_PORVENIR <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%PORVENIR
+Beta_SKANDIA <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%SKANDIA
+Beta_COLFONDOS <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%COLFONDOS
+Beta_PROTECCION
+Beta_PORVENIR 
+Beta_SKANDIA
+Beta_COLFONDOS
+```
+
