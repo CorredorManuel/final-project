@@ -226,7 +226,7 @@ comando \emph{install.packages}.
 \FunctionTok{library}\NormalTok{(tidyverse) }\CommentTok{\#for sort}
 \FunctionTok{library}\NormalTok{(ggplot2)}
 \FunctionTok{library}\NormalTok{(ggthemes)}
-\FunctionTok{library}\NormalTok{(kableExtra)}
+\FunctionTok{library}\NormalTok{(tinytex)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -476,10 +476,119 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \end{Highlighting}
 \end{Shaded}
 
+\hypertarget{cuxe1lculo-de-coeficientes-b-h}{%
+\subsubsection{Cálculo de coeficientes b \&
+h}\label{cuxe1lculo-de-coeficientes-b-h}}
+
+A través de los coeficientes de SMB y HML, mostraremos la manera de
+clasificar cada fondo de acuerdo a su estilo comparándolo luego con
+Market Cap \& Investment Style
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{todo }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(Intercepto,RMRF,SMB,HML))}
 \FunctionTok{rownames}\NormalTok{(todo)}\OtherTok{\textless{}{-}}\NormalTok{tickers}
+\NormalTok{todo[}\FunctionTok{c}\NormalTok{(}\StringTok{"GFFFX"}\NormalTok{,}\StringTok{"AGTHX"}\NormalTok{,}\StringTok{"TRBCX"}\NormalTok{,}\StringTok{"SWPPX"}\NormalTok{,}\StringTok{"VFIAX"}\NormalTok{),]}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##          Intercepto     RMRF         SMB         HML
+## GFFFX -6.844482e-04 1.114258 -0.01978766 -0.16155038
+## AGTHX -8.689948e-04 1.111688 -0.01850829 -0.16276717
+## TRBCX  9.342848e-05 1.018738 -0.17694234 -0.23745526
+## SWPPX  9.942440e-05 1.004135 -0.16580810  0.02512976
+## VFIAX -1.177023e-05 1.004254 -0.19242994  0.03013006
+\end{verbatim}
+
+Una vez calculados los betas vamos a lograr inferir que tipo de fondo es
+de acuerdo a los coeficientes de SMB y HML, pero antes vamos hacer una
+breve explicación sobre los mismos, para hacer poder hacer un contraste
+con la tabla presentada al comienzo.
+
+\[
+SMB:Small\ Minus\ Big\ =\ R_{\left(Small\right)}\ –\ R_{\left(Big\right)}
+\]
+
+Este factor nos indica que tipo de empresa es si es grande o pequeña,
+recordemos que las empresas pequeñas suelen tener una rentabilidad mayor
+a las grandes.
+
+\[
+HML:High\ Minus\ Low\ =\ R_{\left(value\right)}\ –\ R_{\left(growth\right)}
+\] En este factor lo que se indica es cual es valor significativo de
+activos en libros con respecto al valor de mercado, donde las empresas
+de ``value'' son empresas con muchos activos en libros y las empresas de
+growth son empresas cuyos activos son relativamente bajos al valor de
+mercado.
+
+\hypertarget{anuxe1lisis-de-betas}{%
+\paragraph{Análisis de betas}\label{anuxe1lisis-de-betas}}
+
+Teniendo en cuenta la explicación anterior sobre los factores SMB \& HML
+vamos inferir que tipo de empresas tienen cada fondo a partir de los
+coeficientes.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{GFFFX - American Funds The Growth Fund of America}
+\end{itemize}
+
+Es un fondo que tiene empresas según el factor SMB de tipo Mid o Large
+debido a la significancia del coeficiente, en cuanto al factor HML
+podríamos inferir que son de tipo Growth.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{AGTHX - American Funds The Growth Fund of America Class A}
+\end{itemize}
+
+Este fondo tiene empresas de tipo mid o Large por el coeficiente
+negativo del factor SMB y podríamos afirmar que igual al fondo anterior
+son empresas de tipo Growth por el factor HML.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{TRBCX - T. Rowe Price Blue Chip Growth Fund}
+\end{itemize}
+
+Para este fondo al igual que los dos anteriores podríamos decir que es
+un fondo cuyas inversiones son de empresas de tipo Growth y Large,
+porque la negatividad de ambos coeficientes es significativa.
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{SWPPX - Schwab Capital Trust - Schwab S\&P 500 Index Fund}
+\end{itemize}
+
+En este caso particular a diferencia de los anteriores fondos notamos
+que el factor HML presenta un coeficiente positivo con una significancia
+relativamente baja por lo que podríamos decir que es de tipo blend y por
+el lado del factor SMB será de tipo Large o Mid
+
+\begin{itemize}
+\tightlist
+\item
+  \textbf{VFIAX - Vanguard 500 Index Fund}
+\end{itemize}
+
+Finalmente, para este fondo se infiere que tiene empresas de tipo Blend
+y Large o Mid
+
+\hypertarget{estimaciuxf3n-del-intercepto-y-clasificaciuxf3n-de-fondos-seguxfan-rendimiento.}{%
+\subsubsection{Estimación del intercepto y clasificación de fondos según
+rendimiento.}\label{estimaciuxf3n-del-intercepto-y-clasificaciuxf3n-de-fondos-seguxfan-rendimiento.}}
+
+Utilizamos el estimado alpha (intercepto) para rankiar los fondos según
+el rendimiento y los comparamos con los fondos obtenidos al calcular las
+medias.
+
+\begin{Shaded}
+\begin{Highlighting}[]
 \NormalTok{todo }\OtherTok{\textless{}{-}}\NormalTok{ todo[}\FunctionTok{order}\NormalTok{(todo}\SpecialCharTok{$}\NormalTok{Intercepto),]}
 \FunctionTok{print}\NormalTok{(todo[}\DecValTok{16}\SpecialCharTok{:}\DecValTok{20}\NormalTok{,])}
 \end{Highlighting}
@@ -487,12 +596,37 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 
 \begin{verbatim}
 ##         Intercepto       RMRF         SMB         HML
-## SWPPX 9.942096e-05 1.00413522 -0.16580812  0.02512953
-## PIMIX 1.261421e-04 0.17172704  0.06566635  0.06874362
-## FPCIX 2.988896e-04 0.06750089  0.03917016 -0.07656522
-## BBCPX 4.088737e-04 0.07486602  0.02962863 -0.07380545
-## PTTRX 5.529218e-04 0.02675902  0.04105400 -0.08153166
+## SWPPX 0.0000994244 1.00413492 -0.16580810  0.02512976
+## PIMIX 0.0001261465 0.17172685  0.06566637  0.06874318
+## FPCIX 0.0002988601 0.06750278  0.03916986 -0.07656600
+## BBCPX 0.0004088716 0.07486599  0.02962949 -0.07380584
+## PTTRX 0.0005529059 0.02676058  0.04105415 -0.08153094
 \end{verbatim}
+
+Una vez ordenamos los datos por la columna del intercepto, el cual nos
+dice que un ``Alpha'' igual o cercano a cero me indica que los retornos
+esperados evaluados a través del CPM serán los mismos a los que el fondo
+rentará. Al compararlos con los fondos obtenidos el top 5 con un mayor
+rendimiento promedio notamos que, son diferentes a excepción del fondo
+``SWPPX'' que aunque cambio de posición se mantienen en el grupo del top
+5.
+
+\hypertarget{conclusiuxf3n}{%
+\subsubsection{Conclusión}\label{conclusiuxf3n}}
+
+¿Cuáles son las ventajas de calcular el rendimiento de los fondos
+utilizando rendimientos ajustados al riesgo?
+
+\begin{itemize}
+\tightlist
+\item
+  Como pudimos notar en el análisis anterior se puede inferir qué
+  empresas están detrás de este tipo de fondos a partir de los
+  coeficientes estimados para cada factor en este caso SMB y HML
+  planteados por el modelo de Fama \& Frech, la mayor ventaja presente
+  es que podemos determinar de acuerdo con la significancia de los
+  coeficientes como serán los rendimientos.
+\end{itemize}
 
 \hypertarget{time-varying-beta}{%
 \section{Time varying beta}\label{time-varying-beta}}
@@ -561,7 +695,7 @@ meses
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics[width=0.95\linewidth]{figurasR/unnamed-chunk-16-1} \end{center}
+\begin{center}\includegraphics[width=0.95\linewidth]{figurasR/unnamed-chunk-17-1} \end{center}
 
 Tal como podemos apreciar en el grafico anterior, la beta de Apple no es
 constante en el tiempo y tienen una serie de variaciones hasta tal punto
