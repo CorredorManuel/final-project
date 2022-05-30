@@ -203,7 +203,7 @@ $$
 En este factor lo que se indica es cual es valor significativo de activos en libros con respecto al valor de mercado, donde las empresas de "value" son empresas con muchos activos en libros y las empresas de growth son empresas cuyos activos son relativamente bajos al valor de mercado.
 
 
-#### Análisis de betas
+### Análisis de betas
 
 
 Teniendo en cuenta la explicación anterior sobre los factores SMB & HML vamos inferir que tipo de empresas tienen cada fondo a partir de los coeficientes. 

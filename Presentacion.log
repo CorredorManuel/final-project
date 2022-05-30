@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.30)  30 MAY 2022 12:36
+This is pdfTeX, Version 3.141592653-2.6-1.40.24 (TeX Live 2022) (preloaded format=pdflatex 2022.5.30)  30 MAY 2022 12:44
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -402,7 +402,7 @@ Package hyperref Info: Link coloring OFF on input line 120.
 * \@reversemarginfalse
 * (1in=72.27pt=25.4mm, 1cm=28.453pt)
 
-<logo1.png, id=48, 1204.5pt x 1133.23375pt>
+<logo1.png, id=52, 1204.5pt x 1133.23375pt>
 File: logo1.png Graphic file (type png)
 <use logo1.png>
 Package pdftex.def Info: logo1.png  used on input line 136.
@@ -476,7 +476,7 @@ LaTeX Warning: Command \textendash invalid in math mode on input line 510.
 LaTeX Warning: Command \textendash invalid in math mode on input line 518.
 
 [7] [8] [9]
-<figurasR/unnamed-chunk-17-1.pdf, id=131, 469.755pt x 325.215pt>
+<figurasR/unnamed-chunk-17-1.pdf, id=135, 469.755pt x 325.215pt>
 File: figurasR/unnamed-chunk-17-1.pdf Graphic file (type pdf)
 <use figurasR/unnamed-chunk-17-1.pdf>
 Package pdftex.def Info: figurasR/unnamed-chunk-17-1.pdf  used on input line 698.
@@ -487,7 +487,7 @@ Underfull \hbox (badness 1005) in paragraph at lines 716--719
  []
 
 [11 <./figurasR/unnamed-chunk-17-1.pdf>]
-<index.png, id=147, 605.26125pt x 292.09125pt>
+<index.png, id=151, 605.26125pt x 292.09125pt>
 File: index.png Graphic file (type png)
 <use index.png>
 Package pdftex.def Info: index.png  used on input line 771.
@@ -501,21 +501,21 @@ Underfull \hbox (badness 1721) in paragraph at lines 910--919
 No file Presentacion.bbl.
 [16] (./Presentacion.aux)
 Package rerunfilecheck Info: File `Presentacion.out' has not changed.
-(rerunfilecheck)             Checksum: F54D6426759C0DD1A31290BC93AF8ADD;2096.
+(rerunfilecheck)             Checksum: 6A8F0CF99D4A48F95C75CE2A31E29082;2258.
  ) 
 Here is how much of TeX's memory you used:
- 12517 strings out of 480260
- 199497 string characters out of 5892356
+ 12518 strings out of 480260
+ 199520 string characters out of 5892356
  511186 words of memory out of 5000000
- 30194 multiletter control sequences out of 15000+600000
+ 30195 multiletter control sequences out of 15000+600000
  524391 words of font info for 63 fonts, out of 8000000 for 9000
  14 hyphenation exceptions out of 8191
  72i,6n,77p,507b,482s stack positions out of 10000i,1000n,20000p,200000b,200000s
 {c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathsy.enc}{c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ts1.enc}{c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}<c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbx12.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmbxi10.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmcsc10.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi12.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmmi8.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr12.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr17.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmr8.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmri12.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy10.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsy8.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtk10.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtt12.pfb><c:/Users/migue/AppData/Roaming/TinyTeX/texmf-dist/fonts/type1/public/lm/lmtti10.pfb>
-Output written on Presentacion.pdf (17 pages, 554882 bytes).
+Output written on Presentacion.pdf (17 pages, 555158 bytes).
 PDF statistics:
- 257 PDF objects out of 1000 (max. 8388607)
- 199 compressed objects within 2 object streams
+ 262 PDF objects out of 1000 (max. 8388607)
+ 203 compressed objects within 3 object streams
  43 named destinations out of 1000 (max. 500000)
- 104 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 112 words of extra memory for PDF output out of 10000 (max. 10000000)
 
