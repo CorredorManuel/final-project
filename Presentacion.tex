@@ -266,13 +266,6 @@ comando \emph{install.packages}.
 ## 20 FBKWX  Fidelity Advisor Total Bond Fund Class Z      Value     Small
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#kable(x=nombre\_fondos, caption = "Clasificación de Fondos por Market Cap y Investment Style",}
-\CommentTok{\#align = \textquotesingle{}c\textquotesingle{})}
-\end{Highlighting}
-\end{Shaded}
-
 Importacion de datos de Yahoo Finance de los respectivos fondos
 enunciados anteriormente
 
@@ -344,7 +337,17 @@ Cap y investment style pertencen.
 ## 5 VFIAX  Blend     Large
 \end{verbatim}
 
-Se logra concluir que \ldots\ldots{}
+Si hacemos una análisis a partir del cuadro de medias y el tipo de
+empresas que tiene el fondo podemos ver por ``Investment Style'' que los
+5 fondos con mayores rentabilidades son de tipo ``Large'' es decir que
+en su portafolio tienen empresas grandes, en el caso de ``Market Cap''
+para los fondos GFFX, AGTHX, TRBCX son de tipo ``Growth'' es decir que
+en su composición de portafolio las empresas tienen pocos activos en
+libros relativo al valor de mercado, en el caso de los fondos SWPPX,
+VFIAX, el ``Market Cap'' es de tipo ``Blend'' es decir que las empresas
+de estos fondos están en medio de Value -- Growth. En los apartados del
+modelo de Fame y French revisaremos si los coeficientes de la regresión
+de estos fondos en verdad muestran la relación explicada anteriormente.
 
 \textbf{¿Cuáles son las limitaciones/problemas de clasificar el
 rendimiento utilizando rendimientos sin procesar?}
@@ -385,27 +388,19 @@ rendimiento utilizando rendimientos sin procesar?}
 \NormalTok{sharpe\_ratio }\OtherTok{\textless{}{-}} \FunctionTok{round}\NormalTok{(}
   \FunctionTok{SharpeRatio}\NormalTok{(Rentabilidad, }\AttributeTok{Rf =} \FloatTok{0.0016761}\NormalTok{), }\DecValTok{4}
 \NormalTok{)}
-
-\NormalTok{Filtro }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\FunctionTok{sort}\NormalTok{(sharpe\_ratio[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{20}\NormalTok{]))}
-\FunctionTok{print}\NormalTok{(Filtro[}\DecValTok{16}\SpecialCharTok{:}\DecValTok{20}\NormalTok{,}\DecValTok{1}\NormalTok{])}
+\NormalTok{Filtro }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\FunctionTok{sort}\NormalTok{(sharpe\_ratio[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{20}\NormalTok{],}\AttributeTok{decreasing =} \ConstantTok{TRUE}\NormalTok{))}
+\FunctionTok{print}\NormalTok{(Filtro[}\DecValTok{1}\SpecialCharTok{:}\DecValTok{5}\NormalTok{,}\DecValTok{1}\NormalTok{])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##  GFFFX  VSMPX  TRBCX  SWPPX  VFIAX 
-## 0.1994 0.2347 0.2350 0.2475 0.2488
+##  VFIAX  SWPPX  TRBCX  VSMPX  RLBGX 
+## 0.2488 0.2475 0.2350 0.2347 0.1994
 \end{verbatim}
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\CommentTok{\#Filtro \textless{}{-} as.matrix(sort(Filtro,decreasing = TRUE))}
-\CommentTok{\#head(Filtro)}
-\end{Highlighting}
-\end{Shaded}
-
 Una vez tenemos el sharpe Ratio calculado, realizamos la comparación con
-la tabal de medias y notamos que en esta oportunidad el top 5 se
-invierte y aparece un nuevo fondo ** VSMPX**
+la tabla de medias y notamos que en esta oportunidad los activos
+reportados al momento de calcular el Sharpe son diferentes
 
 \textbf{¿Cuáles son las limitaciones de usar SR para clasificar el
 rendimiento de los fondos?}
@@ -413,12 +408,15 @@ rendimiento de los fondos?}
 \begin{itemize}
 \tightlist
 \item
-  Claramente el SR esta teniendo encuenta la tasa libre de riesgo y la
-  deviación estandar, es por eso que hay variación en los resultados.
-  Pero así como esto nos acerca a conocer un poco más cual puede llegar
-  a tener un portafolio optimo, pero puede tener otra implicación grande
-  y es que el Sharpe Ratio, puede tener estar sobre estimando el Risk
-  Free Asset.
+  Como notamos anteriormente en la formula empleada para calcular el
+  Sharpe Ratio, empleamos el activo libre de riesgo y la deviación
+  estándar, se sabe que al maximizar el SR podemos obtener un portafolio
+  optimo, dentro de la frontera eficiente, tal como lo propone
+  Markowitz. Pero contrario a este modelo se habla de que dicho
+  portafolio no es tan exacto como la teoría lo muestra, dado que puede
+  tener varias falencias tales como sobreestimar la tasa libre de riesgo
+  y no llegar a tener en cuenta otros factores que pueden estar
+  empleando los inversionistas para crear sus portafolio.
 \end{itemize}
 
 \hypertarget{fama-french-3f-model}{%
@@ -454,19 +452,8 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \begin{Highlighting}[]
 \NormalTok{X1 }\OtherTok{\textless{}{-}}\NormalTok{ Data\_Factors[,}\DecValTok{2}\SpecialCharTok{:}\DecValTok{4}\NormalTok{]}
 \NormalTok{X }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{( }\FunctionTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{,X1))}
-\NormalTok{Y }\OtherTok{\textless{}{-}} \FunctionTok{as.matrix}\NormalTok{(variable\_y[,}\DecValTok{1}\NormalTok{])}
-\NormalTok{beta }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(X)}\SpecialCharTok{\%*\%}\NormalTok{X)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(X)}\SpecialCharTok{\%*\%}\NormalTok{Y}
-\NormalTok{beta}
 \end{Highlighting}
 \end{Shaded}
-
-\begin{verbatim}
-##              VSMPX
-## 1    -0.0003851904
-## RMRF  1.0178450628
-## SMB  -0.0543353027
-## HML   0.0299575748
-\end{verbatim}
 
 \[
 \hat{\beta}=(X^TX)^{-1}X^TY
@@ -491,25 +478,20 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{todo }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(Intercepto,RMRF,SMB,HML)}
-\CommentTok{\# Transpone todas las columnas menos la primer}
-\NormalTok{df\_transpose }\OtherTok{\textless{}{-}} \FunctionTok{data.frame}\NormalTok{(}\FunctionTok{t}\NormalTok{(todo))}
-\CommentTok{\# Añadimos los nombres de las columnas}
-\FunctionTok{colnames}\NormalTok{(df\_transpose)}\OtherTok{\textless{}{-}}\NormalTok{tickers}
-\end{Highlighting}
-\end{Shaded}
-
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{Filtro1 }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\FunctionTok{sort}\NormalTok{(df\_transpose[}\DecValTok{1}\NormalTok{,}\DecValTok{1}\SpecialCharTok{:}\DecValTok{20}\NormalTok{]))}
-\NormalTok{Filtro2 }\OtherTok{\textless{}{-}} \FunctionTok{t}\NormalTok{(Filtro1)}
-\FunctionTok{print}\NormalTok{(Filtro2[}\DecValTok{16}\SpecialCharTok{:}\DecValTok{20}\NormalTok{,}\DecValTok{1}\NormalTok{])}
+\NormalTok{todo }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(Intercepto,RMRF,SMB,HML))}
+\FunctionTok{rownames}\NormalTok{(todo)}\OtherTok{\textless{}{-}}\NormalTok{tickers}
+\NormalTok{todo }\OtherTok{\textless{}{-}}\NormalTok{ todo[}\FunctionTok{order}\NormalTok{(todo}\SpecialCharTok{$}\NormalTok{Intercepto),]}
+\FunctionTok{print}\NormalTok{(todo[}\DecValTok{16}\SpecialCharTok{:}\DecValTok{20}\NormalTok{,])}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##        SWPPX        PIMIX        FPCIX        BBCPX        PTTRX 
-## 9.941908e-05 1.261415e-04 2.988801e-04 4.088594e-04 5.529083e-04
+##         Intercepto       RMRF         SMB         HML
+## SWPPX 9.942096e-05 1.00413522 -0.16580812  0.02512953
+## PIMIX 1.261421e-04 0.17172704  0.06566635  0.06874362
+## FPCIX 2.988896e-04 0.06750089  0.03917016 -0.07656522
+## BBCPX 4.088737e-04 0.07486602  0.02962863 -0.07380545
+## PTTRX 5.529218e-04 0.02675902  0.04105400 -0.08153166
 \end{verbatim}
 
 \hypertarget{time-varying-beta}{%
@@ -520,6 +502,11 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \NormalTok{Betas }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Betas.xlsx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
+
+En el mundo financiero se tiende asociar las betas con el riesgo
+sistémico de un activo, para revisar si dicha Beta es constante en el
+tiempo o no, calculamos la beta de Apple con respecto al S\&P 500 en una
+ventana continua de 60 meses.
 
 \begin{Shaded}
 \begin{Highlighting}[]
@@ -537,9 +524,7 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \NormalTok{Var1 }\OtherTok{\textless{}{-}}\NormalTok{Var1[}\SpecialCharTok{{-}}\DecValTok{269}\NormalTok{]}
 \NormalTok{Var2}\OtherTok{\textless{}{-}} \FunctionTok{c}\NormalTok{(}\ConstantTok{NA}\NormalTok{,Var2)}
 \NormalTok{Var2 }\OtherTok{\textless{}{-}}\NormalTok{Var2[}\SpecialCharTok{{-}}\DecValTok{269}\NormalTok{]}
-
 \NormalTok{Data\_Betas }\OtherTok{\textless{}{-}} \FunctionTok{as.data.frame}\NormalTok{(}\FunctionTok{cbind}\NormalTok{(Raapl,Var2,Rm,Var1)[}\SpecialCharTok{{-}}\DecValTok{1}\NormalTok{,])}
-\CommentTok{\#Data\_Betas \textless{}{-} cbind(Data\_Betas)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -547,13 +532,11 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \begin{Highlighting}[]
 \NormalTok{cov }\OtherTok{\textless{}{-}} \FunctionTok{cov}\NormalTok{(Data\_Betas}\SpecialCharTok{$}\NormalTok{Var2,Data\_Betas}\SpecialCharTok{$}\NormalTok{Var1)}
 \NormalTok{var }\OtherTok{\textless{}{-}} \FunctionTok{var}\NormalTok{(Data\_Betas}\SpecialCharTok{$}\NormalTok{Var1)}
-
 \NormalTok{beta }\OtherTok{\textless{}{-}}\NormalTok{ cov}\SpecialCharTok{/}\NormalTok{var}
 \NormalTok{t }\OtherTok{\textless{}{-}} \FunctionTok{dim}\NormalTok{(Data\_Betas)[}\DecValTok{1}\NormalTok{]}
 \NormalTok{ventana }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{()}
 \NormalTok{cov1 }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{()}
 \NormalTok{var1 }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{()}
-
 
 \ControlFlowTok{for}\NormalTok{(i }\ControlFlowTok{in} \DecValTok{1}\SpecialCharTok{:}\NormalTok{(n}\DecValTok{{-}60}\NormalTok{))\{}
 \NormalTok{  cov1[i] }\OtherTok{\textless{}{-}} \FunctionTok{cov}\NormalTok{(Data\_Betas}\SpecialCharTok{$}\NormalTok{Var2[i}\SpecialCharTok{:}\NormalTok{(}\DecValTok{59}\SpecialCharTok{+}\NormalTok{i)],Data\_Betas}\SpecialCharTok{$}\NormalTok{Var1[i}\SpecialCharTok{:}\NormalTok{(}\DecValTok{59}\SpecialCharTok{+}\NormalTok{i)])}
@@ -565,6 +548,9 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \end{Highlighting}
 \end{Shaded}
 
+Realizamos el Grafico para evidenciar el Beta con una Ventana de 60
+meses
+
 \begin{Shaded}
 \begin{Highlighting}[]
 \FunctionTok{ggplot}\NormalTok{(ventana1) }\SpecialCharTok{+}
@@ -575,7 +561,19 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \end{Highlighting}
 \end{Shaded}
 
-\begin{center}\includegraphics[width=0.95\linewidth]{figurasR/unnamed-chunk-18-1} \end{center}
+\begin{center}\includegraphics[width=0.95\linewidth]{figurasR/unnamed-chunk-16-1} \end{center}
+
+Tal como podemos apreciar en el grafico anterior, la beta de Apple no es
+constante en el tiempo y tienen una serie de variaciones hasta tal punto
+de empezarse a estabilizarse en el tiempo, claramente una beta mayor a
+1.0 nos da indicios de que es un activo más riesgoso que el mercado,
+muchas veces dicho riesgo esta asociado a los proyectos que tiene la
+compañía y las expectativas sobre si va o no ser rentable, sabemos que
+Apple históricamente en sus inicios no era considerada una empresa cuyos
+proyectos eran realizables, es por eso que alcanzó a presentar una beta
+cercana a 2.2 con respecto al mercado, pero luego con el paso del
+tiempo, logró mostrar que en verdad si lo era, a tal punto de que su
+riesgo (Beta) fluctuara con respecto al mercado.
 
 \hypertarget{performance-of-colombian-pension-funds.}{%
 \section{Performance of Colombian Pension
@@ -626,7 +624,9 @@ rendimientos de una cartera de renta variable global en COP sobre el
 activo libre de riesgo, RG) como el rendimiento del mercado de renta
 variable nacional (rendimiento del COLCAP sobre el activo libre de
 riesgo, RL). Para cada fondo de pensiones, hay que estimar la siguiente
-ecuación:
+ecuación: \[
+R_{it}=\alpha_i+\beta_i\bullet{RG}_t+\gamma_i\bullet{RL}_t+\varepsilon_{it}
+\]
 
 Para la estimación del CAPM mixto, vamos a utilizar los rendimientos de
 el MSCI index Global, el cual esta compuesto por las empresas más
@@ -650,14 +650,19 @@ COLCAP como el índice de capital nacional.
   -\emph{RL:} COLCAP -DF
 \end{itemize}
 
-Para cada fondo de pensiones, se realizaron las estimaciones conforme a
-la siguiente ecuación:
-
-\[
-R_{it}=\alpha_i+\beta_i\bullet{RG}_t+\gamma_i\bullet{RL}_t+\varepsilon_{it}
-\] Explicar cuál es el papel de los coeficientes, y qué nos dicen los
+Explicar cuál es el papel de los coeficientes, y qué nos dicen los
 valores estimados sobre cada fondo de pensiones y su perfil de riesgo.
 ¿Son muy diferentes los coeficientes estimados? Explicar.
+
+Creamos una
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{Beta\_function }\OtherTok{\textless{}{-}} \ControlFlowTok{function}\NormalTok{(X,Y)\{}
+  \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(X)}\SpecialCharTok{\%*\%}\NormalTok{X)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(X)}\SpecialCharTok{\%*\%}\NormalTok{Y}
+\NormalTok{\} }
+\end{Highlighting}
+\end{Shaded}
 
 \begin{itemize}
 \tightlist
@@ -667,18 +672,15 @@ valores estimados sobre cada fondo de pensiones y su perfil de riesgo.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(PROTECCION}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos,PROTECCION)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = PROTECCION ~ RG + RL)
-## 
-## Coefficients:
-## (Intercept)           RG           RL  
-##    0.007757     0.280978     0.080753
+##           [,1]
+##    0.007756745
+## RG 0.280977765
+## RL 0.080752784
 \end{verbatim}
 
 Para el fondo de proteccion podemos notar que el coeficiente que más
@@ -693,18 +695,15 @@ el coeficiente asociado a la varaible RL (cOLCAP).
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(PORVENIR}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos,PORVENIR)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = PORVENIR ~ RG + RL)
-## 
-## Coefficients:
-## (Intercept)           RG           RL  
-##     0.01053      0.12649      0.01467
+##          [,1]
+##    0.01052644
+## RG 0.12648560
+## RL 0.01466640
 \end{verbatim}
 
 Por otro lado, el portafolio moderado de pensiones de poervenir muestra
@@ -718,18 +717,15 @@ un mayor coeficiente en la variable RG.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(SKANDIA}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos,SKANDIA)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = SKANDIA ~ RG + RL)
-## 
-## Coefficients:
-## (Intercept)           RG           RL  
-##    0.006262     0.145670     0.016065
+##           [,1]
+##    0.006261861
+## RG 0.145670188
+## RL 0.016065416
 \end{verbatim}
 
 Así mismo para el caso del fondo Skandia el factor internacional
@@ -744,41 +740,25 @@ comparación con el Colcap.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(COLFONDOS}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos,COLFONDOS)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = COLFONDOS ~ RG + RL)
-## 
-## Coefficients:
-## (Intercept)           RG           RL  
-##    0.004592     0.174990     0.024427
+##          [,1]
+##    0.00459223
+## RG 0.17499049
+## RL 0.02442653
 \end{verbatim}
 
 Finalmente para el caso del fondo COLFONDOS, este tambien tiene un
 coeficiente alto para la variable RG, en comparación con el RL
 
-\begin{Shaded}
-\begin{Highlighting}[]
-\NormalTok{Beta\_PROTECCION }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{Xfondos)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{PROTECCION}
-\NormalTok{Beta\_PORVENIR }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{Xfondos)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{PORVENIR}
-\NormalTok{Beta\_SKANDIA }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{Xfondos)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{SKANDIA}
-\NormalTok{Beta\_COLFONDOS }\OtherTok{\textless{}{-}} \FunctionTok{solve}\NormalTok{(}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{Xfondos)}\SpecialCharTok{\%*\%}\FunctionTok{t}\NormalTok{(Xfondos)}\SpecialCharTok{\%*\%}\NormalTok{COLFONDOS}
-\CommentTok{\#Beta\_PROTECCION}
-\CommentTok{\#Beta\_PORVENIR }
-\CommentTok{\#Beta\_SKANDIA}
-\CommentTok{\#Beta\_COLFONDOS}
-\end{Highlighting}
-\end{Shaded}
-
-\#\#Macro-factor model:
+\hypertarget{macro-factor-model}{%
+\subsection{Macro-factor model:}\label{macro-factor-model}}
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{library}\NormalTok{(readxl)}
 \NormalTok{macro\_factors }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"macro\_factors.xlsx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
@@ -788,6 +768,8 @@ coeficiente alto para la variable RG, en comparación con el RL
 \NormalTok{TRM }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(macro\_factors}\SpecialCharTok{$}\NormalTok{TRM)}
 \NormalTok{TES }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(macro\_factors}\SpecialCharTok{$}\NormalTok{TES)}
 \NormalTok{IPC }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(macro\_factors}\SpecialCharTok{$}\NormalTok{IPC)}
+\NormalTok{Xfondos1 }\OtherTok{\textless{}{-}} \FunctionTok{cbind}\NormalTok{(}\DecValTok{1}\NormalTok{,RG,RL,TRM,TES,IPC)}
+\FunctionTok{colnames}\NormalTok{(Xfondos1)}\OtherTok{\textless{}{-}}\FunctionTok{c}\NormalTok{(}\StringTok{"Intercepto"}\NormalTok{,}\StringTok{"RG"}\NormalTok{,}\StringTok{"RL"}\NormalTok{,}\StringTok{"TRM"}\NormalTok{,}\StringTok{"TES"}\NormalTok{,}\StringTok{"IPC"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -817,18 +799,18 @@ cada uno.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(PROTECCION}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL}\SpecialCharTok{+}\NormalTok{TRM}\SpecialCharTok{+}\NormalTok{TES}\SpecialCharTok{+}\NormalTok{IPC)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos1,PROTECCION)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = PROTECCION ~ RG + RL + TRM + TES + IPC)
-## 
-## Coefficients:
-## (Intercept)           RG           RL          TRM          TES          IPC  
-##    0.002608     0.429828     0.089780    -0.351218     0.128349    -0.027073
+##                    [,1]
+## Intercepto  0.002607842
+## RG          0.429827757
+## RL          0.089779546
+## TRM        -0.351218129
+## TES         0.128348703
+## IPC        -0.027073114
 \end{verbatim}
 
 Para el fondo protección podemos notar que hay un cambio en los
@@ -849,18 +831,18 @@ al modelo de forma negativa.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(PORVENIR}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL}\SpecialCharTok{+}\NormalTok{TRM}\SpecialCharTok{+}\NormalTok{TES}\SpecialCharTok{+}\NormalTok{IPC)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos1,PORVENIR)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = PORVENIR ~ RG + RL + TRM + TES + IPC)
-## 
-## Coefficients:
-## (Intercept)           RG           RL          TRM          TES          IPC  
-##   0.0082957    0.1842383    0.0172084   -0.1377166    0.0003877    0.8169784
+##                     [,1]
+## Intercepto  0.0082956663
+## RG          0.1842382867
+## RL          0.0172084432
+## TRM        -0.1377165975
+## TES         0.0003877277
+## IPC         0.8169784463
 \end{verbatim}
 
 Continuando con el análisis y teniendo factores macroeconómicos podemos
@@ -882,18 +864,18 @@ podrían ser internacionales.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(SKANDIA}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL}\SpecialCharTok{+}\NormalTok{TRM}\SpecialCharTok{+}\NormalTok{TES}\SpecialCharTok{+}\NormalTok{IPC)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos1,SKANDIA)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = SKANDIA ~ RG + RL + TRM + TES + IPC)
-## 
-## Coefficients:
-## (Intercept)           RG           RL          TRM          TES          IPC  
-##   -0.006967     0.265388     0.023806    -0.257714     0.296938    -0.100875
+##                    [,1]
+## Intercepto -0.006966852
+## RG          0.265387673
+## RL          0.023806050
+## TRM        -0.257713967
+## TES         0.296938161
+## IPC        -0.100874568
 \end{verbatim}
 
 Por otro lado el fondo de pensiones skandia a diferencia del fondo
@@ -912,18 +894,18 @@ internacional y los de TES colombianos.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\FunctionTok{lm}\NormalTok{(COLFONDOS}\SpecialCharTok{\textasciitilde{}}\NormalTok{RG}\SpecialCharTok{+}\NormalTok{RL}\SpecialCharTok{+}\NormalTok{TRM}\SpecialCharTok{+}\NormalTok{TES}\SpecialCharTok{+}\NormalTok{IPC)}
+\FunctionTok{Beta\_function}\NormalTok{(Xfondos1,COLFONDOS)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-## 
-## Call:
-## lm(formula = COLFONDOS ~ RG + RL + TRM + TES + IPC)
-## 
-## Coefficients:
-## (Intercept)           RG           RL          TRM          TES          IPC  
-##   -0.001395     0.292470     0.031825    -0.271587     0.151944    -0.185309
+##                    [,1]
+## Intercepto -0.001394781
+## RG          0.292469914
+## RL          0.031825175
+## TRM        -0.271587364
+## TES         0.151944491
+## IPC        -0.185308611
 \end{verbatim}
 
 Finalmente haciendo un análisis al fondo de pensiones Colfondos, podemos

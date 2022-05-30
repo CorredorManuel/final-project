@@ -95,7 +95,7 @@ Conociendo los fondos con mas rentabilidades, analizamos a que Market Cap y inve
 ```{r}
 nombre_fondos[c(16,15,18,4,2),c("Symbol","Mkt Cap","Invest Style")]
 ```
-Se logra concluir que ......
+Si hacemos una análisis a partir del cuadro de medias y el tipo de empresas que tiene el fondo podemos ver por “Investment Style” que los 5 fondos con mayores rentabilidades son  de tipo “Large” es decir que en su portafolio tienen empresas grandes, en el caso de “Market Cap” para los fondos GFFX, AGTHX, TRBCX son de tipo “Growth” es decir que en su composición de portafolio las empresas tienen pocos activos en libros relativo al valor de mercado, en el caso de los fondos SWPPX, VFIAX, el “Market Cap” es de tipo “Blend” es decir que las empresas de estos fondos están en medio de Value – Growth. En los apartados del modelo de Fame y French revisaremos si los coeficientes de la regresión de estos fondos en verdad muestran la relación explicada anteriormente.
 
 **¿Cuáles son las limitaciones/problemas de clasificar el rendimiento utilizando rendimientos sin procesar?**
 
@@ -117,19 +117,16 @@ $$
 sharpe_ratio <- round(
   SharpeRatio(Rentabilidad, Rf = 0.0016761), 4
 )
-
-Filtro <- cbind(sort(sharpe_ratio[1,1:20]))
-print(Filtro[16:20,1])
-#Filtro <- as.matrix(sort(Filtro,decreasing = TRUE))
-#head(Filtro)
+Filtro <- cbind(sort(sharpe_ratio[1,1:20],decreasing = TRUE))
+print(Filtro[1:5,1])
 ```
 
 
-Una vez tenemos el sharpe Ratio calculado, realizamos la comparación con la tabal de medias y notamos que en esta oportunidad el top 5 se invierte y aparece un nuevo fondo  ** VSMPX**
+Una vez tenemos el sharpe Ratio calculado, realizamos la comparación con la tabla de medias y notamos que en esta oportunidad los activos reportados al momento de calcular el Sharpe son diferentes
 
 **¿Cuáles son las limitaciones de usar SR para clasificar el rendimiento de los fondos?**
 
-- Claramente el SR esta teniendo encuenta la tasa libre de riesgo y la deviación estandar, es por eso que hay variación en los resultados. Pero así como esto nos acerca a conocer un poco más cual puede llegar a tener un portafolio optimo, pero puede tener otra implicación grande y es que el Sharpe Ratio, puede tener estar sobre estimando el Risk Free Asset.
+- Como notamos anteriormente en la formula empleada para calcular el Sharpe Ratio, empleamos el activo libre de riesgo y la deviación estándar, se sabe que al maximizar el SR podemos obtener un portafolio optimo, dentro de la frontera eficiente, tal como lo propone Markowitz. Pero contrario a este modelo se habla de que dicho portafolio no es tan exacto como la teoría lo muestra, dado que puede tener varias falencias tales como sobreestimar la tasa libre de riesgo y no llegar a tener en cuenta otros factores que pueden estar empleando los inversionistas para crear sus portafolio.
 
 ## Fama-French 3F model 
 
@@ -160,10 +157,6 @@ for (i in 1:x) {
 ```{r}
 X1 <- Data_Factors[,2:4]
 X <- as.matrix( cbind(1,X1))
-#Y <- as.matrix(variable_y[,1])
-#beta <- solve(t(X)%*%X)%*%t(X)%*%Y
-#beta
-
 ```
 
 $$
@@ -186,27 +179,20 @@ for (i in 1:20){
 ```
 
 ```{r}
-todo <- cbind(Intercepto,RMRF,SMB,HML)
-# Transpone todas las columnas menos la primer
-df_transpose <- data.frame(t(todo))
-# Añadimos los nombres de las columnas
-colnames(df_transpose)<-tickers
-df_transpose
+todo <- as.data.frame(cbind(Intercepto,RMRF,SMB,HML))
+rownames(todo)<-tickers
+todo <- todo[order(todo$Intercepto),]
+print(todo[16:20,])
 ```
 
-```{r}
-Filtro1 <- cbind(sort(df_transpose[1,1:20]))
-Filtro2 <- t(Filtro1)
-Filtro3 <-t(df_transpose)
-            cbind(sort(t(df_transpose)[1:20,c(1,2,3,4)]))
-print(Filtro3[16:20,c(1,2,3,4)])
-```
 
 # Time varying beta
 
 ```{r}
 Betas <- read_excel("Betas.xlsx")
 ```
+
+En el mundo financiero se tiende asociar las betas con el riesgo sistémico de un activo, para revisar si dicha Beta es constante en el tiempo o no, calculamos la beta de Apple con respecto al S&P 500 en una ventana continua de 60 meses.
 
 ```{r}
 Rm <-Betas$`Adj Close**`
@@ -223,22 +209,17 @@ Var1 <- c(NA,Var1)
 Var1 <-Var1[-269]
 Var2<- c(NA,Var2)
 Var2 <-Var2[-269]
-
 Data_Betas <- as.data.frame(cbind(Raapl,Var2,Rm,Var1)[-1,])
-#Data_Betas <- cbind(Data_Betas)
 ```
 
 ```{r}
-
 cov <- cov(Data_Betas$Var2,Data_Betas$Var1)
 var <- var(Data_Betas$Var1)
-
 beta <- cov/var
 t <- dim(Data_Betas)[1]
 ventana <- cbind()
 cov1 <- cbind()
 var1 <- cbind()
-
 
 for(i in 1:(n-60)){
   cov1[i] <- cov(Data_Betas$Var2[i:(59+i)],Data_Betas$Var1[i:(59+i)])
@@ -247,23 +228,18 @@ for(i in 1:(n-60)){
 }
 y <- 1:208
 ventana1 <- as.data.frame(cbind(ventana,y)) 
-
 ```
 
-
-
+Realizamos el Grafico para evidenciar el Beta con una Ventana de 60 meses
 ```{r}
 ggplot(ventana1) +
 geom_line(aes(y=ventana,x=y), colour= "blue",size=1) +
 ggtitle("                     Serie de Beta Ventana 60 meses") +
 labs(x="Periodo de Tiempo",y="Beta" )+
 theme_economist()+theme(axis.text = element_text(angle=0))
-  
-  
-
 ```
 
-
+Tal como podemos apreciar en el grafico anterior, la beta de Apple no es constante en el tiempo y tienen una serie de variaciones hasta tal punto de empezarse a estabilizarse en el tiempo, claramente una beta mayor a 1.0 nos da indicios de que es un activo más riesgoso que el mercado, muchas veces dicho riesgo esta asociado a los proyectos que tiene la compañía y las expectativas sobre si va o no ser rentable, sabemos que Apple históricamente en sus inicios no era considerada una empresa cuyos proyectos eran realizables, es por eso que alcanzó a presentar una beta cercana a 2.2 con respecto al mercado, pero luego con el paso del tiempo, logró mostrar que en verdad si lo era, a tal punto de que su riesgo (Beta) fluctuara con respecto al mercado.
 
 # Performance of Colombian Pension Funds.
 
@@ -291,6 +267,9 @@ COLFONDOS<- cbind(Fondos$COLFONDOS)
 ## Estimación de CAPM Mix
 
 Vamos a estimar un CAPM 'mixto' donde la cartera de mercado incluye tanto los rendimientos de un índice de renta variable internacional (los rendimientos de una cartera de renta variable global en COP sobre el activo libre de riesgo, RG) como el rendimiento del mercado de renta variable nacional (rendimiento del COLCAP sobre el activo libre de riesgo, RL). Para cada fondo de pensiones, hay que estimar la siguiente ecuación:
+$$
+R_{it}=\alpha_i+\beta_i\bullet{RG}_t+\gamma_i\bullet{RL}_t+\varepsilon_{it}
+$$
 
 Para la estimación del CAPM mixto, vamos a utilizar los rendimientos de el MSCI index Global, el cual esta compuesto por las empresas más rentables en los diferentes países desarrollados.
 
@@ -306,31 +285,34 @@ Por otro lado, utilizamos el DTF como la tasa libre de riesgo y el COLCAP como e
   
   -*RL:* COLCAP -DF
 
-Para cada fondo de pensiones, se realizaron las estimaciones conforme a la siguiente ecuación:
-
-$$
-R_{it}=\alpha_i+\beta_i\bullet{RG}_t+\gamma_i\bullet{RL}_t+\varepsilon_{it}
-$$
 Explicar cuál es el papel de los coeficientes, y qué nos dicen los valores estimados sobre cada fondo de pensiones y su perfil de riesgo. ¿Son muy diferentes los coeficientes estimados? Explicar.
+
+Creamos una
+```{r}
+Beta_function <- function(X,Y){
+  solve(t(X)%*%X)%*%t(X)%*%Y
+} 
+```
 
 - **Fondo Proteccion:**
 
 ```{r}
-lm(PROTECCION~RG+RL)
+Beta_function(Xfondos,PROTECCION)
 ```
+
 Para el fondo de proteccion podemos notar que el coeficiente que más afecta el modelo es el RG, es decir el indice global, en comparación con el coeficiente asociado a la varaible RL (cOLCAP).
 
 - **Fondo Porvenir:**
 
 ```{r}
-lm(PORVENIR~RG+RL)
+Beta_function(Xfondos,PORVENIR)
 ```
 Por otro lado, el portafolio moderado de pensiones de poervenir muestra un mayor coeficiente en la variable RG.
 
 - **Fondo Skandia:**
 
 ```{r}
-lm(SKANDIA~RG+RL)
+Beta_function(Xfondos,SKANDIA)
 ```
 Así mismo para el caso del fondo Skandia el factor internacional representado en el MSCI index Global, tiene un mayor impacto a comparación con el Colcap.  
 
@@ -338,27 +320,15 @@ Así mismo para el caso del fondo Skandia el factor internacional representado e
 - **Fondo Colfondos:**
 
 ```{r}
-lm(COLFONDOS~RG+RL)
+Beta_function(Xfondos,COLFONDOS)
 ```
 Finalmente para el caso del fondo COLFONDOS, este tambien tiene un coeficiente alto para la variable RG, en comparación con el RL
 
 
-```{r}
-Beta_PROTECCION <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%PROTECCION
-Beta_PORVENIR <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%PORVENIR
-Beta_SKANDIA <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%SKANDIA
-Beta_COLFONDOS <- solve(t(Xfondos)%*%Xfondos)%*%t(Xfondos)%*%COLFONDOS
-#Beta_PROTECCION
-#Beta_PORVENIR 
-#Beta_SKANDIA
-#Beta_COLFONDOS
-```
-
-##Macro-factor model:
+## Macro-factor model:
 
 
 ```{r}
-library(readxl)
 macro_factors <- read_excel("macro_factors.xlsx")
 ```
 
@@ -366,6 +336,8 @@ macro_factors <- read_excel("macro_factors.xlsx")
 TRM <- cbind(macro_factors$TRM)
 TES <- cbind(macro_factors$TES)
 IPC <- cbind(macro_factors$IPC)
+Xfondos1 <- cbind(1,RG,RL,TRM,TES,IPC)
+colnames(Xfondos1)<-c("Intercepto","RG","RL","TRM","TES","IPC")
 ```
 
 Para poder continuar con nuestro análisis que nos permita explicar de dónde provienen los rendimientos de los fondos de pensiones colombianos, ahora a nuestro modelo empleado anteriormente, vamos agregarle 3 factores más, pero en este caso serán factores macroeconómicos tales como la tasa de referencia del mercado (TRM), la tasa de los TES a 1 año y finalmente el IPC, pues consideramos que estas variables pueden darnos más indicios para llegar a una conclusión final acerca de las rentabilidades de los fondos de inversión, para eso utilizaremos la siguiente ecuación.
@@ -377,10 +349,11 @@ $$
 Para iniciar corremos la regresión para los diferentes fondos de pensiones y posteriormente realizamos un análisis sobre las variables de cada uno. 
 
 
+
 - **Fondo Proteccion:**
 
 ```{r}
-lm(PROTECCION~RG+RL+TRM+TES+IPC)
+Beta_function(Xfondos1,PROTECCION)
 ```
 
 Para el fondo protección podemos notar que hay un cambio en los coeficientes con respecto a la anterior regresión del mismo fondo podemos notar que el intercepto es casi cero por lo que las rentabilidades dadas por el fondo son acertadas, Por otro lado el coeficiente que más significancia tienen el modelo es del factor internacional, pues es de 0.4298, Así mismo el factor macroeconómico de test tiene también una alta significancia en el modelo 0.1283 y finalmente variables como la TRM y el IPC Son coeficientes que afectan al modelo de forma negativa.
@@ -389,7 +362,7 @@ Para el fondo protección podemos notar que hay un cambio en los coeficientes co
 - **Fondo Porvenir:**
 
 ```{r}
-lm(PORVENIR~RG+RL+TRM+TES+IPC)
+Beta_function(Xfondos1,PORVENIR)
 ```
 
 Continuando con el análisis y teniendo factores macroeconómicos podemos ver que en el caso de porvenir los coeficientes del IPC e internacionales como el MSCI index Global, son altos por lo que podemos concluir que las rentabilidades de las pensiones obligatorias del fondo porvenir están más ligadas a las expectativas de inflación que presenta el país, como también a un factor internacional, sin embargo el coeficiente de los TEST es casi cero por lo que podríamos afirmar que no tiene una relación con los títulos de renta fija nacionales, sin embargo no significa que su portafolio no tenga está clase de títulos pues podrían ser internacionales.
@@ -397,7 +370,7 @@ Continuando con el análisis y teniendo factores macroeconómicos podemos ver qu
 - **Fondo Skandia:**
 
 ```{r}
-lm(SKANDIA~RG+RL+TRM+TES+IPC)
+Beta_function(Xfondos1,SKANDIA)
 ```
 
 Por otro lado el fondo de pensiones skandia a diferencia del fondo porvenir los coeficientes de IPC como el de la TRM son negativos, En este caso el intercepto es negativo por lo que podríamos inferir que las rentabilidades generadas estarían por debajo de las esperadas por parte de los inversionistas, en la misma línea de análisis los dos factores con mayor significancia son los del mercado de renta variable internacional y los de TES colombianos. 
@@ -406,7 +379,7 @@ Por otro lado el fondo de pensiones skandia a diferencia del fondo porvenir los 
 - **Fondo Colfondos:**
 
 ```{r}
-lm(COLFONDOS~RG+RL+TRM+TES+IPC)
+Beta_function(Xfondos1,COLFONDOS)
 ```
 
 Finalmente haciendo un análisis al fondo de pensiones Colfondos, podemos notar que la variable internacional y los TEST colombianos tienen el mayor coeficiente, esto nos podría dar indicios que las rentabilidades de dicho fondo están más sujetas a los mercados internacionales que locales debido a que el factor RL (COLCAP) es significativamente pequeño, también podemos destacar que los factores como la TRM y IPC son significativamente negativos.
