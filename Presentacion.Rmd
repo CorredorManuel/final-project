@@ -1,16 +1,46 @@
 ---
-title: "CAPITAL MARKETS - FINAL PROJECT"
-author: "Miguel Angel Malagon - Manuel Camilo Corredor"
-date: '2022-05-21'
-output: html_document
+principal: true
+forprint: true
+fontsize: 12pt
+geometry: margin = 2.5cm
+bibliography: ["bib/library.bib", "bib/paquetes.bib"]
+metodobib: true
+biblio-style: "plainnat"
+csl: methods-in-ecology-and-evolution.csl  
+link-citations: yes
+lang: es
+output: 
+  pdf_document:
+    keep_tex: yes
+    number_sections: yes
+    citation_package: natbib 
+    toc: yes
+    toc_depth: 3
+    fig_caption: yes
+    includes:
+      before_body: portadas/latex_paginatitulo_modTFMDS.tex
 ---
-
-```{r setup, include=FALSE, warning=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+```{r setup, include=FALSE,}
+options(kableExtra.latex.load_packages = F)
+knitr::opts_chunk$set(fig.path = 'figurasR/',
+                      echo = TRUE, warning = FALSE, message = FALSE,
+                      fig.pos="H",fig.align="center",out.width="95%",
+                      cache=FALSE) # 
+knitr::write_bib(c("knitr","rmarkdown","dplyr","ggplot2","kableExtra"),
+                 file="bib/paquetes.bib", width = 60)
 ```
+\newpage
+# Introducción
 
-```{r,echo=FALSE,warning=FALSE, cache=FALSE, message=FALSE}
-#install.packages("quantmod")
+La teoría de valoración de activos ha tenido diferentes postulados que le han permitido a los inversionistas sustentar sus inversiones a partir de análisis que les permitan tomar la mejor decisión. En este documento buscamos analizar dos modelo importantes tales como el modelo de CAPM y Fama & French aplicados en la sustentación de los rendimientos de los fondos de inversiones estadounidenses, así como los fondos de pensiones colombianos, en cada una de las secciones se presentan una serie de análisis enfocados en determinar que factores afectan los rendimientos de dichos fondos.
+\newpage
+
+
+# Measuring fund performance
+**Librerías requeridas**
+
+Nota: Si una librería no le carga, proceda a instalarla mediante el comando *install.packages*.
+```{r}
 library(quantmod)
 library(readxl)
 library(dygraphs)
@@ -19,35 +49,21 @@ library(datasets)
 library(tidyverse) #for sort
 library(ggplot2)
 library(ggthemes)
-library(readxl)
-#install.packages("kableExtra")
-#library(kableExtra)
+library(kableExtra)
 ```
 
-# 1. Measuring fund performance
 
-Inicialmente seleccionamos 20  fondos mutuos de capital o ETF con sede en los Estados Unidos entre mayo de 2017 y abril de 2022.
 
+
+**Importar Datos**
 ```{r}
-library(readxl)
-nombre_fondos <- read_excel("Fondos.xlsx")
+nombre_fondos <- read_excel("Fondos.xlsx")#nombre_fondos
+tickers <- nombre_fondos$Symbol
 nombre_fondos
-
 ```
 
-
+Importacion de datos de Yahoo Finance de los respectivos fondos enunciados anteriormente 
 ```{r}
-tickers <- c("VSMPX","VFIAX","DODGX","SWPPX","RLBGX","FSGEX","VGHAX",
-             "FPCIX","FTBFX","BBCPX","PTTRX","FKINX","CAIBX","ABALX",
-             "AGTHX","GFFFX","AMECX","TRBCX","PIMIX","FBKWX")
-```
-
-Calcule los rendimientos anuales promedio de cada fondo y determine qué fondos están en el top 5 de rendimiento. Presente algunas estadísticas de los fondos. 
-
-**¿Cuáles son las limitaciones/problemas de clasificar el rendimiento utilizando rendimientos sin procesar?**
-
-
-```{r,echo=FALSE}
 Prices <- c()
 for (activos in tickers){
   Prices <- cbind(Prices,getSymbols.yahoo(
@@ -55,40 +71,40 @@ for (activos in tickers){
     to="2022-03-02",periodicity = "monthly",auto.assign = FALSE)[,6])
 }
 colnames(Prices)<-tickers
-
 ```
 
-
-Una vez tenemos nuestros precios vamos a calcular las rentabilidades de cada uno de los fondos, para conocer posteriormente cual es el fondo con mayores rentabilidades.
-
+Una vez tenemos nuestros precios vamos a calcular las rentabilidades de cada uno de los fondos, para conocer posteriormente el top 5 de los fondos con mayores rentabilidades.
 
 ```{r}
 Rentabilidad <- c()
 n <- ncol(Prices)
 for (i in 1:n){
-
     Rentabilidad <- cbind(Rentabilidad,monthlyReturn(Prices[,i],leading = FALSE))[-1,]
 }
 colnames(Rentabilidad)<-tickers  
+```
+Teniendo las Rentabilidades mensuales de los fondos, calculamos la media para cada uno de ellos.
+Donde posteriormente elegimos el top 5 con mayor rentabilidad
+```{r}
 media<-data.frame(sort(round(colMeans(Rentabilidad),4),decreasing = TRUE))
 colnames(media)<-"Media"
 head(media,5)
-
 ```
 
+Conociendo los fondos con mas rentabilidades, analizamos a que Market Cap y investment style pertencen.
 ```{r}
-nombre_fondos[c(16,4,15,18,1,2,3,7),]
-
+nombre_fondos[c(16,15,18,4,2),c("Symbol","Mkt Cap","Invest Style")]
 ```
-
+Se logra concluir que ......
 
 **¿Cuáles son las limitaciones/problemas de clasificar el rendimiento utilizando rendimientos sin procesar?**
 
-- Calcular la media de las rentabilidades de manera aritmética puede estar un sesgada, pues en la muestra puede haber datos que jalen la muestra ya sea hacía arriba (Datos muy altos) o hacía abajo (Datos muy bajos), dificultando tomar una decisión de manera más objetiva a partir de las rentabilidades. En los apartados siguientes mostraremos otras maneras de analizar las rentabilidades.
+- Calcular la media de las rentabilidades de manera aritmética puede estar sesgada, debido a que pueden haber datos que jalen la muestra ya sea hacía arriba (Datos muy altos) o hacía abajo (Datos muy bajos), dificultando tomar una decisión de manera más objetiva a partir de las rentabilidades. En los apartados siguientes mostraremos otras maneras de analizar las rentabilidades.
 
-**Sharpe Ratio:**
+## Sharpe Ratio:
 
 - Calcule el Sharpe Ratio (SR) de cada fondo. 
+
 
 $$
 \frac{(R_{a}-R_{f})}{\sigma }
@@ -107,6 +123,7 @@ print(Filtro[16:20,1])
 #Filtro <- as.matrix(sort(Filtro,decreasing = TRUE))
 #head(Filtro)
 ```
+
 
 Una vez tenemos el sharpe Ratio calculado, realizamos la comparación con la tabal de medias y notamos que en esta oportunidad el top 5 se invierte y aparece un nuevo fondo  ** VSMPX**
 
@@ -140,13 +157,12 @@ for (i in 1:x) {
 ```
 
 
-
 ```{r}
 X1 <- Data_Factors[,2:4]
 X <- as.matrix( cbind(1,X1))
-Y <- as.matrix(variable_y[,1])
-beta <- solve(t(X)%*%X)%*%t(X)%*%Y
-beta
+#Y <- as.matrix(variable_y[,1])
+#beta <- solve(t(X)%*%X)%*%t(X)%*%Y
+#beta
 
 ```
 
@@ -175,16 +191,18 @@ todo <- cbind(Intercepto,RMRF,SMB,HML)
 df_transpose <- data.frame(t(todo))
 # Añadimos los nombres de las columnas
 colnames(df_transpose)<-tickers
+df_transpose
 ```
 
 ```{r}
 Filtro1 <- cbind(sort(df_transpose[1,1:20]))
 Filtro2 <- t(Filtro1)
-print(Filtro2[16:20,1])
+Filtro3 <-t(df_transpose)
+            cbind(sort(t(df_transpose)[1:20,c(1,2,3,4)]))
+print(Filtro3[16:20,c(1,2,3,4)])
 ```
 
-
-# 2. Time varying beta
+# Time varying beta
 
 ```{r}
 Betas <- read_excel("Betas.xlsx")
@@ -246,7 +264,8 @@ theme_economist()+theme(axis.text = element_text(angle=0))
 ```
 
 
-# 3. Performance of Colombian Pension Funds.
+
+# Performance of Colombian Pension Funds.
 
 
 Descargue una serie mensual de 10 años de rendimientos para cada una de las cuatro compañías administradoras de fondos de pensiones obligatorias en Colombia (use el "Portafolio Moderado"). 
@@ -268,13 +287,16 @@ COLFONDOS<- cbind(Fondos$COLFONDOS)
 
 ```
 
+
 ## Estimación de CAPM Mix
 
 Vamos a estimar un CAPM 'mixto' donde la cartera de mercado incluye tanto los rendimientos de un índice de renta variable internacional (los rendimientos de una cartera de renta variable global en COP sobre el activo libre de riesgo, RG) como el rendimiento del mercado de renta variable nacional (rendimiento del COLCAP sobre el activo libre de riesgo, RL). Para cada fondo de pensiones, hay que estimar la siguiente ecuación:
 
 Para la estimación del CAPM mixto, vamos a utilizar los rendimientos de el MSCI index Global, el cual esta compuesto por las empresas más rentables en los diferentes países desarrollados.
 
-![MSCI INDEX](C:/Users/migue/Documents/GitHub/final-project/index.png)
+![**MSCI INDEX**](index.png "texto de la imagen")
+
+
 
 Por otro lado, utilizamos el DTF como la tasa libre de riesgo y el COLCAP como el índice de capital nacional.
 
@@ -388,4 +410,3 @@ lm(COLFONDOS~RG+RL+TRM+TES+IPC)
 ```
 
 Finalmente haciendo un análisis al fondo de pensiones Colfondos, podemos notar que la variable internacional y los TEST colombianos tienen el mayor coeficiente, esto nos podría dar indicios que las rentabilidades de dicho fondo están más sujetas a los mercados internacionales que locales debido a que el factor RL (COLCAP) es significativamente pequeño, también podemos destacar que los factores como la TRM y IPC son significativamente negativos.
-
