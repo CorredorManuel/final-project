@@ -57,7 +57,7 @@ library(tinytex)
 
 **Importar Datos**
 ```{r}
-nombre_fondos <- read_excel("Fondos.xlsx")#nombre_fondos
+nombre_fondos <- read_excel("Data/Fondos.xlsx")#nombre_fondos
 tickers <- nombre_fondos$Symbol
 nombre_fondos
 ```
@@ -139,7 +139,7 @@ $$
 
 ```{r}
 # FAMA & FRENCH
-Data_Factors <- read_excel("Data_Factors.xlsx")
+Data_Factors <- read_excel("Data/Data_Factors.xlsx")
 names(Data_Factors)[2] <-"RMRF"
 ```
 
@@ -251,7 +251,7 @@ Una vez ordenamos los datos por la columna del intercepto, el cual nos dice que 
 # Time varying beta
 
 ```{r}
-Betas <- read_excel("Betas.xlsx")
+Betas <- read_excel("Data/Betas.xlsx")
 ```
 
 En el mundo financiero se tiende asociar las betas con el riesgo sistémico de un activo, para revisar si dicha Beta es constante en el tiempo o no, calculamos la beta de Apple con respecto al S&P 500 en una ventana continua de 60 meses.
@@ -309,7 +309,7 @@ Tal como podemos apreciar en el grafico anterior, la beta de Apple no es constan
 Descargue una serie mensual de 10 años de rendimientos para cada una de las cuatro compañías administradoras de fondos de pensiones obligatorias en Colombia (use el "Portafolio Moderado"). 
 
 ```{r}
-Fondos <- read_excel("retornos_fondos.xlsx")
+Fondos <- read_excel("Data/retornos_fondos.xlsx")
 head(Fondos)
 ```
 
@@ -335,7 +335,7 @@ $$
 
 Para la estimación del CAPM mixto, vamos a utilizar los rendimientos de el MSCI index Global, el cual esta compuesto por las empresas más rentables en los diferentes países desarrollados.
 
-![**MSCI INDEX**](index.png "texto de la imagen")
+![**MSCI INDEX**](Imagenes/index.png "texto de la imagen")
 
 
 
@@ -391,7 +391,7 @@ Finalmente para el caso del fondo COLFONDOS, este tambien tiene un coeficiente a
 
 
 ```{r}
-macro_factors <- read_excel("macro_factors.xlsx")
+macro_factors <- read_excel("Data/macro_factors.xlsx")
 ```
 
 ```{r}
@@ -445,3 +445,5 @@ Beta_function(Xfondos1,COLFONDOS)
 ```
 
 Finalmente haciendo un análisis al fondo de pensiones Colfondos, podemos notar que la variable internacional y los TEST colombianos tienen el mayor coeficiente, esto nos podría dar indicios que las rentabilidades de dicho fondo están más sujetas a los mercados internacionales que locales debido a que el factor RL (COLCAP) es significativamente pequeño, también podemos destacar que los factores como la TRM y IPC son significativamente negativos.
+
+

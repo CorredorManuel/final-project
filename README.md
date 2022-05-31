@@ -8,3 +8,5 @@ inversiones estadounidenses, así como los fondos de pensiones colombianos, en c
 las secciones se presentan una serie de análisis enfocados en determinar que factores afectan
 los rendimientos de dichos fondos.
 
+Si desea revisar todo el proceso desde Rstudio se recomienda abrir el archivo "final-project" 
+

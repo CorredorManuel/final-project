@@ -133,7 +133,7 @@
 %----------------------------------------------------------------------------------------
 \center
 
-\includegraphics[width=8cm,height=8cm]{logo1}\\[0.5cm] % Include a department/university logo - this will require the graphicx package
+\includegraphics[width=8cm,height=8cm]{Imagenes/logo1}\\[0.5cm] % Include a department/university logo - this will require the graphicx package
 
 %----------------------------------------------------------------------------------------
 
@@ -234,7 +234,7 @@ comando \emph{install.packages}.
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{nombre\_fondos }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Fondos.xlsx"}\NormalTok{)}\CommentTok{\#nombre\_fondos}
+\NormalTok{nombre\_fondos }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data/Fondos.xlsx"}\NormalTok{)}\CommentTok{\#nombre\_fondos}
 \NormalTok{tickers }\OtherTok{\textless{}{-}}\NormalTok{ nombre\_fondos}\SpecialCharTok{$}\NormalTok{Symbol}
 \NormalTok{nombre\_fondos}
 \end{Highlighting}
@@ -432,7 +432,7 @@ R_{it}=\alpha_i+\beta \ast RMRF_t +b_i \ast SMB_t +h_i \ast HML_t + \epsilon_{it
 \begin{Shaded}
 \begin{Highlighting}[]
 \CommentTok{\# FAMA \& FRENCH}
-\NormalTok{Data\_Factors }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data\_Factors.xlsx"}\NormalTok{)}
+\NormalTok{Data\_Factors }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data/Data\_Factors.xlsx"}\NormalTok{)}
 \FunctionTok{names}\NormalTok{(Data\_Factors)[}\DecValTok{2}\NormalTok{] }\OtherTok{\textless{}{-}}\StringTok{"RMRF"}
 \end{Highlighting}
 \end{Shaded}
@@ -494,11 +494,11 @@ Market Cap \& Investment Style
 
 \begin{verbatim}
 ##          Intercepto     RMRF         SMB         HML
-## GFFFX -6.844434e-04 1.114258 -0.01978714 -0.16155054
-## AGTHX -8.689946e-04 1.111688 -0.01850785 -0.16276687
-## TRBCX  9.342890e-05 1.018738 -0.17694223 -0.23745524
-## SWPPX  9.942225e-05 1.004135 -0.16580783  0.02512938
-## VFIAX -1.177993e-05 1.004254 -0.19243015  0.03012976
+## GFFFX -6.844475e-04 1.114258 -0.01978760 -0.16155044
+## AGTHX -8.689959e-04 1.111688 -0.01850812 -0.16276715
+## TRBCX  9.342344e-05 1.018739 -0.17694304 -0.23745531
+## SWPPX  9.942171e-05 1.004135 -0.16580831  0.02512962
+## VFIAX -1.177402e-05 1.004254 -0.19242945  0.03012983
 \end{verbatim}
 
 Una vez calculados los betas vamos a lograr inferir que tipo de fondo es
@@ -596,11 +596,11 @@ medias.
 
 \begin{verbatim}
 ##         Intercepto       RMRF         SMB         HML
-## SWPPX 9.942225e-05 1.00413506 -0.16580783  0.02512938
-## PIMIX 1.261357e-04 0.17172739  0.06566501  0.06874323
-## FPCIX 2.988873e-04 0.06750110  0.03917119 -0.07656460
-## BBCPX 4.088743e-04 0.07486611  0.02963008 -0.07380506
-## PTTRX 5.529118e-04 0.02676022  0.04105371 -0.08153123
+## SWPPX 9.942171e-05 1.00413515 -0.16580831  0.02512962
+## PIMIX 1.261400e-04 0.17172718  0.06566523  0.06874298
+## FPCIX 2.988860e-04 0.06750116  0.03917018 -0.07656544
+## BBCPX 4.088595e-04 0.07486649  0.02962831 -0.07380465
+## PTTRX 5.529248e-04 0.02675907  0.04105490 -0.08153118
 \end{verbatim}
 
 Una vez ordenamos los datos por la columna del intercepto, el cual nos
@@ -633,7 +633,7 @@ utilizando rendimientos ajustados al riesgo?
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Betas }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Betas.xlsx"}\NormalTok{)}
+\NormalTok{Betas }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data/Betas.xlsx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -719,7 +719,7 @@ en Colombia (use el ``Portafolio Moderado'').
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{Fondos }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"retornos\_fondos.xlsx"}\NormalTok{)}
+\NormalTok{Fondos }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data/retornos\_fondos.xlsx"}\NormalTok{)}
 \FunctionTok{head}\NormalTok{(Fondos)}
 \end{Highlighting}
 \end{Shaded}
@@ -768,7 +768,7 @@ rentables en los diferentes países desarrollados.
 
 \begin{figure}
 \centering
-\includegraphics{index.png}
+\includegraphics{Imagenes/index.png}
 \caption{\textbf{MSCI INDEX}}
 \end{figure}
 
@@ -893,7 +893,7 @@ coeficiente alto para la variable RG, en comparación con el RL
 
 \begin{Shaded}
 \begin{Highlighting}[]
-\NormalTok{macro\_factors }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"macro\_factors.xlsx"}\NormalTok{)}
+\NormalTok{macro\_factors }\OtherTok{\textless{}{-}} \FunctionTok{read\_excel}\NormalTok{(}\StringTok{"Data/macro\_factors.xlsx"}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
